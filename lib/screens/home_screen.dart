@@ -13,6 +13,18 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  ScrollController _scrollController = ScrollController();
+  @override
+  void dispose() {
+    _scrollController.dispose(); // dispose the controller
+    super.dispose();
+  }
+
+  void _scrollToTop() {
+    _scrollController.animateTo(0,
+        duration: Duration(seconds: 1), curve: Curves.linear);
+  }
+
   @override
   Widget build(BuildContext context) {
     return ResponsiveBuilder(
@@ -44,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 17, vertical: 26),
-                      child: CustomButton(),
+                      child: CustomButton(onTap: _scrollToTop),
                     ),
                   ),
                 ),
@@ -97,6 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           body: ListView(
             padding: EdgeInsets.zero,
+            controller: _scrollController,
             children: [
               isMobile
                   ? Container(
