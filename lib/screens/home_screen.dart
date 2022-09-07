@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:test_project/components/button.dart';
@@ -20,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context, sizingInformation) {
         bool isMobile = sizingInformation.isMobile ||
             sizingInformation.screenSize.width < 870;
-        print(isMobile);
+
         return Scaffold(
           backgroundColor: Colors.white,
           bottomNavigationBar: !isMobile
@@ -51,6 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
           appBar: PreferredSize(
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
                   height: 5,
@@ -161,7 +161,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(
-                          width: isMobile ? null : 480,
+                          width: isMobile
+                              ? MediaQuery.of(context).size.width
+                              : 480,
                           child: TabWidget(),
                         ),
                       ],
@@ -209,37 +211,40 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     ),
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color(0xffE6FFFA), Color(0xffEBF4FF)],
-                  ),
+              CustomPaint(
+                painter: DemoPainter(),
+                child: Container(
+                  /*    decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Color(0xffE6FFFA), Color(0xffEBF4FF)],
+                    ),
+                  ),*/
+                  padding: EdgeInsets.only(top: 100, left: 40),
+                  child: isMobile
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            text('2'),
+                            Padding(
+                              padding: EdgeInsets.only(left: 100.0, bottom: 60),
+                              child: Image.asset('assets/images/task.png',
+                                  width: 220),
+                            ),
+                          ],
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(left: 100.0, bottom: 60),
+                              child: Image.asset('assets/images/task.png',
+                                  width: 220),
+                            ),
+                            SizedBox(width: 50),
+                            text('2'),
+                          ],
+                        ),
                 ),
-                padding: EdgeInsets.only(top: 100, left: 40),
-                child: isMobile
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          text('2'),
-                          Padding(
-                            padding: EdgeInsets.only(left: 100.0, bottom: 60),
-                            child: Image.asset('assets/images/task.png',
-                                width: 220),
-                          ),
-                        ],
-                      )
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(left: 100.0, bottom: 60),
-                            child: Image.asset('assets/images/task.png',
-                                width: 220),
-                          ),
-                          SizedBox(width: 50),
-                          text('2'),
-                        ],
-                      ),
               ),
               Container(
                 color: Colors.white,
@@ -295,7 +300,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               Column(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     'Erstellen dein Lebenslauf',
@@ -312,4 +317,47 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       );
+}
+
+class DemoPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Color(0xffE6FFFA)
+      ..style = PaintingStyle.fill;
+
+    final path = new Path()
+      ..moveTo(size.width * .6, 0)
+      ..quadraticBezierTo(
+        size.width * .7,
+        size.height * .108,
+        size.width * .9,
+        size.height * .05,
+      )
+      ..arcToPoint(
+        Offset(
+          size.width * .93,
+          size.height * .85,
+        ),
+        radius: Radius.circular(size.height * .05),
+        largeArc: true,
+      )
+      ..cubicTo(
+        size.width * .5,
+        size.height * .84,
+        size.width * .5,
+        size.height * .86,
+        0,
+        size.height * .93,
+      )
+      ..lineTo(0, 0)
+      ..close();
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
+  }
 }

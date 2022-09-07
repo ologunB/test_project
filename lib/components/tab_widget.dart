@@ -43,8 +43,9 @@ class _TabWidgetState extends State<TabWidget> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: 14,
-                          color:
-                              _currentIndex == 0 ? Colors.white : Colors.black,
+                          color: _currentIndex == 0
+                              ? Colors.white
+                              : AppColors.primary,
                           fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -71,8 +72,9 @@ class _TabWidgetState extends State<TabWidget> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: 14,
-                          color:
-                              _currentIndex == 1 ? Colors.white : Colors.black,
+                          color: _currentIndex == 1
+                              ? Colors.white
+                              : AppColors.primary,
                           fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -100,8 +102,9 @@ class _TabWidgetState extends State<TabWidget> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: 14,
-                          color:
-                              _currentIndex == 2 ? Colors.white : Colors.black,
+                          color: _currentIndex == 2
+                              ? Colors.white
+                              : AppColors.primary,
                           fontWeight: FontWeight.bold),
                     ),
                   ),
