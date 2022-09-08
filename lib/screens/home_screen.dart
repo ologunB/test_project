@@ -4,6 +4,7 @@ import 'package:test_project/components/button.dart';
 import 'package:test_project/components/colors.dart';
 import 'package:test_project/components/tab_widget.dart';
 import 'package:test_project/components/title.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -25,6 +26,8 @@ class _HomeScreenState extends State<HomeScreen> {
         duration: Duration(seconds: 1), curve: Curves.linear);
   }
 
+  int _currentIndex = 0;
+  bool _showAppbarButton = false;
   @override
   Widget build(BuildContext context) {
     return ResponsiveBuilder(
@@ -64,11 +67,13 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Container(
-                  height: 5,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Color(0xff319795), Color(0xff3182CE)],
+                SafeArea(
+                  child: Container(
+                    height: 5,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Color(0xff319795), Color(0xff3182CE)],
+                      ),
                     ),
                   ),
                 ),
@@ -93,14 +98,43 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          'Login',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.primary,
-                          ),
-                        ),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            if (_showAppbarButton) ...[
+                              Text(
+                                'Jetzt Klicken',
+                                style: TextStyle(
+                                  fontSize: 19,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 20.0),
+                                child: OutlinedButton(
+                                  onPressed: () {},
+                                  child: Text(
+                                    'Kostenlos Registrieren',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.primary,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
+                            Text(
+                              'Login',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.primary,
+                              ),
+                            ),
+                          ],
+                        )
                       ],
                     )),
               ],
@@ -141,7 +175,21 @@ class _HomeScreenState extends State<HomeScreen> {
                           Column(
                             children: [
                               TitleWidget(),
-                              Container(width: 320, child: CustomButton()),
+                              VisibilityDetector(
+                                key: Key('my-widget-key'),
+                                onVisibilityChanged: (visibilityInfo) {
+                                  if (visibilityInfo.visibleFraction == 0) {
+                                    _showAppbarButton = true;
+                                  } else {
+                                    _showAppbarButton = false;
+                                  }
+                                  setState(() {});
+                                },
+                                child: Container(
+                                  width: 320,
+                                  child: CustomButton(),
+                                ),
+                              ),
                             ],
                           ),
                           SizedBox(width: 30),
@@ -176,8 +224,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         SizedBox(
                           width: isMobile
                               ? MediaQuery.of(context).size.width
-                              : 480,
-                          child: TabWidget(),
+                              : 580,
+                          child: TabWidget(
+                            currentIndex: _currentIndex,
+                            onSelect: (a) {
+                              _currentIndex = a;
+                              setState(() {});
+                            },
+                          ),
                         ),
                       ],
                     ),
@@ -187,7 +241,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 50, vertical: 30),
                 child: Text(
-                  'Drei einfache Schritte zur Vermittlung neuer Mitarbeiter',
+                  'Drei einfache Schritte\nzur Vermittlung neuer Mitarbeiter',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 21,
@@ -201,24 +255,24 @@ class _HomeScreenState extends State<HomeScreen> {
                         Padding(
                           padding: EdgeInsets.only(left: 100.0, bottom: 60),
                           child: Image.asset(
-                            'assets/images/profile.png',
+                            'assets/images/first$_currentIndex.png',
                             width: 220,
                           ),
                         ),
                         Container(
                           color: Colors.white,
-                          child: text('1'),
+                          child: text(1),
                         ),
                       ],
                     )
                   : Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        text('1'),
+                        text(1),
                         Padding(
                           padding: EdgeInsets.only(right: 100.0, bottom: 60),
                           child: Image.asset(
-                            'assets/images/profile.png',
+                            'assets/images/first$_currentIndex.png',
                             width: 220,
                           ),
                         ),
@@ -237,10 +291,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       ? Column(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            text('2'),
+                            text(2),
                             Padding(
                               padding: EdgeInsets.only(left: 100.0, bottom: 60),
-                              child: Image.asset('assets/images/task.png',
+                              child: Image.asset(
+                                  'assets/images/second$_currentIndex.png',
                                   width: 220),
                             ),
                           ],
@@ -250,11 +305,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             Padding(
                               padding: EdgeInsets.only(left: 100.0, bottom: 60),
-                              child: Image.asset('assets/images/task.png',
+                              child: Image.asset(
+                                  'assets/images/second$_currentIndex.png',
                                   width: 220),
                             ),
                             SizedBox(width: 50),
-                            text('2'),
+                            text(2),
                           ],
                         ),
                 ),
@@ -266,11 +322,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     ? Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          text('3'),
+                          text(3),
                           Padding(
                             padding: EdgeInsets.only(left: 100.0, bottom: 60),
                             child: Image.asset(
-                              'assets/images/person.png',
+                              'assets/images/third$_currentIndex.png',
                               width: 220,
                             ),
                           ),
@@ -280,11 +336,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          text('3'),
+                          text(3),
                           Padding(
                             padding: EdgeInsets.only(left: 100.0, bottom: 60),
                             child: Image.asset(
-                              'assets/images/person.png',
+                              'assets/images/third$_currentIndex.png',
                               width: 220,
                             ),
                           ),
@@ -298,7 +354,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget text(String a) => Padding(
+  Widget text(int a) => Padding(
         padding: const EdgeInsets.all(12.0),
         child: IntrinsicHeight(
           child: Row(
@@ -312,24 +368,34 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: Color(0xff718096),
                 ),
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Erstellen dein Lebenslauf',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      height: 0,
-                      fontSize: 15.75,
-                      color: Color(0xff718096),
-                    ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20.0, left: 10),
+                child: Text(
+                  descs[(_currentIndex * 3) + (a - 1)],
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                    //  height: 0,
+                    fontSize: 15.75,
+                    color: Color(0xff718096),
                   ),
-                ],
+                ),
               ),
             ],
           ),
         ),
       );
+
+  List<String> descs = [
+    'Erstellen dein Lebenslauf',
+    'Erstellen dein Lebenslauf',
+    'Mit nur einem Klick\nbewerben',
+    'Erstellen dein\nUnternehmensprofil',
+    'Erstellen ein Jobinserat',
+    'Wahle deinen\nneuen Mitarbeiter aus',
+    'Erstellen dein\nUnternehmensprofil',
+    'Erhalte Vermittlungs-\nangebot von Arbeitgeber',
+    'Vermittlung nach\nProvision oder\nStundenlohn',
+  ];
 }
 
 class DemoPainter extends CustomPainter {
